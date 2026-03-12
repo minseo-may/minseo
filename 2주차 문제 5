@@ -1,0 +1,10 @@
+x=0:0.01:2;
+u = 3*log10(70*x + 1); %u함수
+v = 4*cos(7*x);%v함수
+
+plot(x,u)
+hold on
+plot(x,v)
+
+xlabel('mile')
+ylabel('speed')
