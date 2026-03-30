@@ -1,0 +1,4 @@
+function A=bms_25012520_func_3b(r)
+global V;%전역 변수 선언
+A=pi.*r.*sqrt(r.^2+((3.*V)./(pi.*r.^2)).^2);%주어진 V값에 대한 A계산
+end
