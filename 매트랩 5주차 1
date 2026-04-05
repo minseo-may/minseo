@@ -1,0 +1,28 @@
+(1)문제
+x=[-2,-1,0,1,2];
+
+r1=squareVec(x)
+r2=meanVec(x)
+r3=mixedTransform(x)
+
+function y=squareVec(x)
+y=x.^2;
+end
+
+function y=meanVec(x)
+y=mean(x);
+end
+
+function y=mixedTransform(x)
+y=zeros(size(x));%반환할 배열 생성
+for i=1:length(x)
+    if (x(i)<0)%음수인 경우
+        y(i)=abs(x(i));%절대값으로 바꿈
+    elseif(x(i)==0)
+        y(i)=0;%0일 경우 그대로
+    else
+        y(i)=2.*x(i)+1; %양수일 경우 계산
+    end
+end
+end
+
