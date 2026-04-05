@@ -1,0 +1,19 @@
+3번 문제
+applicants=[165,72,1;
+    172,85,0;
+    168,91,1;
+    181,77,1;
+    174,69,0;
+    169,88,1];%지원자 배열
+
+tall=applicants(:,1)>=170 %키 170이상 지원자 논리 배열
+
+score=applicants(:,2)>=80 %점수 80점 이상 논리 배열
+
+pass=applicants(:,3)==1 %면접까지 통과한 지원자 논리 배열
+
+final = (applicants(:,1) >= 170) & (applicants(:,2) >= 80) & (applicants(:,3) == 1);
+%세개 모두 만족하는 행 번호 찾음 조건 충족하는 최종 합격자 없음
+index=find(final); %행번호 못 찾는다
+
+r=[index,applicants(index,:)]
