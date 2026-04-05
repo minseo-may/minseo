@@ -1,0 +1,19 @@
+2번문제 
+x=input('학생의 이름을 입력하세요','s');
+score=input('국어,영어,수학 성적을 벡터로 입력하세요');
+average=mean(score);%점수 평균 계산
+
+fprintf('학생 이름 : %s\n',x)
+fprintf('입력된 성적 : %d %d %d\n', score(1),score(2),score(3))
+fprintf('점수 평균 : %.2f\n', average)
+
+if average>=90
+    fprintf('Excellent\n')
+elseif average>=80
+    fprintf('Good\n')
+elseif average>=70
+    fprintf('Fair\n')
+else
+    fprirnf('Needs Improvement\n')
+end
+
