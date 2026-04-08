@@ -1,0 +1,19 @@
+#pragma warning(disable:4996)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int N, s;
+	scanf("%d %d", &N, &s);//변수 입력 받음
+	int* arr = (int*)malloc(sizeof(int) * N);
+	for (int* p = arr;p < arr + N;p++) {
+		scanf("%d", p);
+	}
+	for (int* p = arr;p < arr + N;p++) {
+		if (*p < s) {
+			printf("%d ", *p);
+		}
+	}
+	free(arr);
+	return 0;
+}
