@@ -1,0 +1,25 @@
+#pragma warning(disable:4996)
+#include <stdio.h>
+#include <stdlib.h>
+
+
+
+int main() {
+	int N;
+	scanf("%d", &N);//입력 받을 정수의 개수
+	int arr[200];
+	for (int* p = arr;p < arr + N;p++) {
+		scanf("%d", p);//정수 입력받음
+	}
+	int n;
+	scanf("%d", &n);//비교할 정수
+	int count = 0;//정수 셀 변수
+	for (int* p = arr;p < arr + N;p++) {
+		if (*p == n) {
+			count++;//일치할 경우 개수 증가
+		}
+	}
+	printf("%d", count);
+	return 0;
+
+}
