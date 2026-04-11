@@ -1,0 +1,167 @@
+문제 1번
+clear;
+clc;
+
+x=input('x를 입력하세요');
+
+if x>0
+    y=x.^2;
+else
+    y=0;
+end
+
+disp(y)
+
+문제 2
+clc;
+clear;
+
+m=input('1부터 4까지 중에 하나를 입력하세요');
+
+switch m
+    case 1
+        fprintf('January');
+    case 2
+        fprintf('February');
+    case 3
+        fprintf('March');
+    case 4
+        fprintf('April');
+    otherwise
+        fprintf('invalid month');
+end
+
+문제 3
+clc;
+clear;
+
+x=[3,-5,0,8,-2,4,-7];
+
+c=0;
+
+for i=1:length(x)
+    if (x(i)<0)
+        c=c+1;
+    end
+end
+fprintf('Negative numbers count: %d\n', c);
+
+문제 4
+clc;
+clear;
+
+x=[4,-9,0,16,-1,25];
+y=zeros(size(x));
+for i=1:length(x)
+    if (x(i)>0)%양수인 경우
+        y(i)=sqrt(x(i));
+    elseif (x(i)==0)%0인경우
+        y(i)=0;
+    else
+        y(i)=abs(x(i));
+    end
+end
+y
+
+문제 5
+clc;
+clear;
+
+%사용자 입력
+a=input('a를 입력하세요');
+b=input('b를 입력하세요');
+cmd=input('명령을 입력하세요','s');
+
+switch cmd
+    case 'add'
+        disp(a+b);
+    case 'sub'
+        disp(a-b);
+    case 'mul'
+        disp(a*b);
+    case 'div'
+        if (b==0)
+            fprintf('division by zero');
+        else
+            disp(a/b);
+        end
+    otherwise
+        fprintf('invalid command');
+end
+
+문제 6
+clc;
+clear;
+
+N=input('양의 정수를 입력하세요');
+
+total=0;
+
+for i=1:N
+    if(rem(i,3)==0 && rem(i,2)~=0)
+        total=total+i;
+    end
+end
+disp(total);
+
+문제 7
+clc;
+clear;
+
+N=input('양의 정수를 입력하세요');
+
+a=zeros(1,N);
+
+for k=1:N
+    if(rem(k,2)==1)%홀수인 경우
+        a(k)=k^2;
+    else
+        a(k)=k^3;
+    end
+end
+disp(a);
+
+문제 8번
+clc;
+clear;
+
+price=[19,18,22,21,25,19,17,21,27,29];
+
+ju=1000;%가진 주식의 개수
+buy=0;%사는데 소비한 금액
+sell=0;%팔아서 얻은 금액
+for i=1:10
+    if price(i)<20 %가격이 20보다 낮으면
+        buy=buy+price(i)*100;%주식 100개 구매
+        ju=ju+100;%주식 보유 개수 100개 증가
+    elseif price(i)>25
+        sell =sell+ price(i) * 100; % 주식 100개 판매
+        ju = ju - 100; % 주식 보유 개수 100개 감소
+    end
+end
+a=buy
+b=sell
+c=ju
+d=29*ju-19*1000+sell-buy
+
+문제 9
+clc;
+clear;
+
+cmd=input('연결의 형태를 입력하세요','s');
+n=input('저항의 개수를 입력하세요');
+r=zeros(1,n);
+R=0;%등가 저항
+for i=1:n
+    r(i)=input('각 저항의 값을 입력하세요');
+    if(strcmp(cmd,'직렬'))
+        R=R+r(i);
+    elseif(strcmp(cmd,'병렬'))
+        R=R+1/r(i);
+    end
+end
+if(strcmp(cmd,'직렬'))
+     disp(R);
+elseif(strcmp(cmd,'병렬'))
+    disp(1/R);
+end
