@@ -1,0 +1,26 @@
+#pragma warning(disable:4996)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int N, M;
+	scanf("%d %d", &N, &M);
+	int arr[100];//배열
+	int c = 1;
+	for (int* p = arr;p < arr + N;p++) {
+		*p = c;//바구니에 각 숫자의 값 대입
+		c++;
+	}
+	for (int m = 0;m < M;m++) {//공을 바꾸는 횟수
+		int i, j;
+		scanf("%d %d", &i, &j);
+		i--;j--;
+		int tmp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = tmp;//두 공을 바꿈
+	}
+	for (int* p = arr;p < arr + N;p++) {
+		printf("%d ", *p);//바꾼거 출력
+	}
+	return 0;
+}
