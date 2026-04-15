@@ -1,0 +1,25 @@
+#pragma warning(disable:4996)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int N;
+	scanf("%d", &N);
+	double* ar = (double*)malloc(sizeof(double) * N);//점수 배열 할당
+	double max = -1;//최대 점수 저장할 수
+	for (double* p = ar;p < ar + N;p++) {
+		scanf("%lf", p);//값을 입력 받음
+		if (*p >= max) {
+			max = *p;//최대값 갱신
+		}
+	}
+	double avg = 0;//평균 구하기
+	for (double* p = ar;p < ar + N;p++) {
+		*p = *p / max * 100;//점수 값 새로 갱신
+		avg += *p;
+	}
+	avg /= N;//평균 구함
+	printf("%lf", avg);
+	return 0;
+
+}
