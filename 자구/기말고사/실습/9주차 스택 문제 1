@@ -1,0 +1,135 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#pragma warning (disable:4996)
+
+int N;//스택의 크기
+int t = -1;//스택의 관리하는 수
+
+void push(char* stack, char c) {//스택에 원소 추가하는 함수
+	if (t == N - 1) {//스택이 꽉찬 경우
+		printf("Stack FULL\n");//스택이 꽉찼음을 알림
+		return;
+	}
+	else {//스택이 꽉 차지 않은 경우
+		t++;//탑 값을 증가 시킴
+		stack[t] = c;//배열에 값 대입
+	}
+	return;//함수 종료
+}
+
+void pop(char* stack) {//탑의 원소를 반환후 삭제하는 함수
+	if (t == -1) {//배열이 비어 있는 경우
+		printf("Stack Empty\n");
+		return;//비어있음을 표기하고 종료
+	}
+	else {
+		t--;//t제거해서 감소
+	}
+	return;
+}
+
+void peek(char* stack) {
+	if (t == -1) {
+		printf("Stack Empty\n");//비어있음을 표시하고 종료
+		return;
+	}
+	else {
+		printf("%c\n", stack[t]);//스택의 맨 위에 있는 원소를 출력
+	}
+	return;
+}
+
+void duplicate(char* stack) {//맨 위의 값을 복제하는 함수
+	if (t == -1) {
+		printf("Stack Empty\n");//스택이 비었음을 알리고 종료
+		return;
+	}
+	else if (t == N - 1) {//스택이 꽉 찬 경우
+		printf("Stack FULL\n");
+		return;
+	}
+	else {
+		stack[t + 1] = stack[t];//스택의 맨위 값을 복사
+		t++;//스택 값 증가 시킴
+	}
+	return;
+}
+
+void upRotate(char* stack,int n) {//원소를 하나씩 위쪽으로 이동시키는 함수
+	if (t == -1)//n값이 범위 안에 있는지 확인
+		return;              
+	if (n > t + 1 || n <= 1) 
+		return;
+	char swap = stack[t];
+	for (int i = t;i > t - n + 1;i--) {
+		stack[i] = stack[i - 1];//스택에 저장된 원소를 하나씩 위로 올림
+	}
+	stack[t - n + 1] = swap;//마지막 원소 저장
+	return;
+}
+
+void downRotate(char* stack, int n) {//원소를 하나씩 아래쪽으로 이동시키는 함수
+	if (t == -1)//n값이 범위 안에 있는지 확인
+		return;
+	if (n > t + 1 || n <= 1)
+		return;
+	char swap = stack[t - n + 1];//맨 마지막 원소를 저장
+	for (int i = t - n + 1;i < t;i++) {
+		stack[i] = stack[i + 1];//한칸씩 아래로 이동
+	}
+	stack[t] = swap;//임시 저장된 값 대입
+	return;
+}
+
+void print(char* stack) {//스택의 모든 원소를 출력하는 함수
+	for (int i = t;i >= 0;i--) {
+		printf("%c", stack[i]);
+	}
+	printf("\n");//다 출력한 후 줄바꿈
+	return;//순서대로 공간 없이 출력
+}
+
+int main() {
+	int  M;
+	scanf("%d", &N);//스택의 크기 입력 받음
+	scanf("%d", &M);//연산의 개수
+
+	char* stack = (char*)malloc(sizeof(char) * N);//스택을 동적 할당
+
+	char cmd[100];//명령 받을 변수
+	char c;//스택 추가시 넘길 변수
+	int num;//회전시 넘길 변수
+
+	for (int i = 0;i < M;i++) {
+		scanf("%s", cmd);//명령을 입력 받음
+		
+		if (strcmp(cmd, "POP") == 0) {//각각의 함수에 따른 명령 실행
+			pop(stack);
+		}
+		else if (strcmp(cmd, "PUSH") == 0) {
+			scanf(" %c", &c);
+			push(stack, c);
+		}
+		else if (strcmp(cmd, "PEEK") == 0) {
+			peek(stack);
+		}
+		else if (strcmp(cmd, "DUP") == 0) {
+			duplicate(stack);
+		}
+		else if (strcmp(cmd, "UpR") == 0) {
+			int n;
+			scanf("%d", &n);//바꿀 개수 입력
+			upRotate(stack, n);
+		}
+		else if (strcmp(cmd, "DownR") == 0) {
+			int n;
+			scanf("%d", &n);//바꿀 개수 입력
+			downRotate(stack, n);
+		}
+		else if (strcmp(cmd, "PRINT") == 0) {
+			print(stack);
+		}
+	}
+	return 0;
+}
