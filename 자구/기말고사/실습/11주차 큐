@@ -1,0 +1,125 @@
+#include<stdio.h>
+#include<string.h>
+#include <stdlib.h>
+#pragma warning(disable:4996)
+
+typedef struct node {
+	int data;//저장할 정수 값
+	struct node* prev;//이전 노드를 가리키는 포인터
+	struct node* next;//다음 노드를 가리키는 포인터
+}node;
+
+node* front = NULL;//맨앞 노드를 가리키는 포인터
+node* rear = NULL;//마지막 노드를 가리키는 포인터
+
+void add_front(int x) {//맨 앞에 추가하는 함수
+	node* ne = (node*)malloc(sizeof(node));//새 노드 할당
+	ne->data = x;//새 노드에 데이터 저장
+	ne->prev = NULL;//맨 앞 노드이므로 앞 노드는 눌
+	ne->next = front;//현재 맨 앞의 노드가 다음 노드가 됨
+	
+	if (front != NULL) {//노드가 비어있지 않다면
+		front->prev = ne;//기존 앞 노드를 지금 노드로 지정
+	}
+	front = ne;//앞을 새 노드로 지정
+	if (rear == NULL) {//아예 비어있는 경우라면
+		rear = ne;//뒤도 현재 노드
+	}
+	return;
+}
+
+void add_rear(int x) {//맨 뒤에 추가하는 함수
+	node* ne = (node*)malloc(sizeof(node));//새 노드 할당
+	ne->data = x;//노드에 데이터 저장
+	ne->prev = rear;
+	ne->next = NULL;//노드 값 저장
+
+	if (rear != NULL) {//맨 뒤에 노드가 존재한다면
+		rear->next = ne;
+	}
+	rear = ne;
+	if (front == NULL) {//첫 노드 추가 인 경우
+		front = ne;
+	}
+	return;
+}
+
+int delete_front() {//맨 앞의 원소를 삭제하는 함수
+	if (front == NULL) {//데크가 비어 있는 경우
+		printf("underflow");
+		return 1;//1값을 반환
+	}
+	node* tmp = front;//노드 임시 보관
+	front = front->next;//프론트를 다음으로 이동
+	if (front != NULL) {//노드가 더 남아있다면
+		front->prev = NULL;//맨 앞을 눌을 가리키게 함
+	}
+	else {//모두 삭제해서 비게 된 경우
+		rear = NULL;
+	}
+	free(tmp);
+	return 0;
+}
+
+int delete_rear() {//맨 뒤의 원소를 삭제하는 함수
+	if (rear == NULL) {//데크가 비어 있는 경우
+		printf("underflow");
+		return 1;//1값을 반환
+	}
+	node* tmp = rear;
+	rear = rear->prev;//전 노드로 그 값을 이동
+	if (rear != NULL) {//노드가 남아 있는 경우
+		rear->next = NULL;//다음을 눌로 지정
+	}
+	else {
+		front = NULL;//다 빈 경우 프론트도 눌로 초기화
+	}
+	free(tmp);
+	return 0;
+}
+
+void print() {
+	for (node* p = front;p != NULL;p = p->next) {
+		printf(" %d", p->data);//데이터를 출력
+	}
+	printf("\n");
+	return;
+}
+
+
+int main() {
+	int n;
+	scanf("%d", &n);//명령의 개수
+	for (int i = 0;i < n;i++) {
+		char cmd[3];
+		scanf("%s", cmd);//명령을 입력 받음
+		
+		if (strcmp(cmd, "AF") == 0) {//명령 검사
+			int x;
+			scanf("%d", &x);
+			add_front(x);//명령 실행
+		}
+		else if (strcmp(cmd, "AR") == 0) {
+			int x;
+			scanf("%d", &x);
+			add_rear(x);//맨 뒤에 추가
+		}
+		else if (strcmp(cmd, "DF") == 0) {
+			int x = delete_front();
+			if (x == 1) {//언더 플로우가 일어난 경우
+				return 0;//함수 종료
+			}
+		}
+		else if (strcmp(cmd, "DR") == 0) {
+			int x = delete_rear();
+			if (x == 1) {//언더 플로우가 일어난 경우
+				return 0;//함수 종료
+			}
+		}
+		else if (strcmp(cmd, "P") == 0) {
+			print();
+		}
+
+	}
+	return 0;
+}
