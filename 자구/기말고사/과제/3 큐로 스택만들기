@@ -1,0 +1,260 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <windows.h>
+#pragma warning(disable:4996)
+
+int MAX = 100010;//컴퓨터 성능 문제로 10만으로 정의
+
+typedef struct queue {//큐 구조체 정의
+	int data[100010];//저장할 배열
+	int front;//큐의 앞 인덱스
+	int rear;//큐의 뒤 인덱스
+}queue;
+
+typedef struct stack {
+	queue q1;//메인 큐
+	queue q2;//보조 큐
+	int size;//현재 스택 원소 개수 저장
+}stack;
+
+stack s;//스택 선언
+
+void initqueue(queue* q) {//큐를 초기화 하는 함수
+	q->front = 0;
+	q->rear = 0;//큐의 값을 초기화
+}
+
+int isQueueEmpty(queue* q) {
+	return q->front == q->rear;//front와 rear이 같으면 1 반환 ->빈큐임
+}
+
+void enqueue(queue* q, int value) {//rear위치에 데이터 저장하는 함수
+	q->data[q->rear] = value;//rear위치에 데이터를 저장
+
+	q->rear = (q->rear + 1) % MAX;//rear을 한칸 증가
+}
+
+int dequeue(queue* q) {//제거하는 함수
+	int value = q->data[q->front];//위치에 있는 데이터를 저장
+	q->front = (q->front+1) % MAX;//front를 한 칸 증가
+	return value;//제거한 값을 반환
+}
+
+int queueFront(queue* q) {//맨 앞에 있는 값을 반환하는 함수
+	return q->data[q->front];//front 위치에 있는 값을 반환
+}
+
+void initStack(stack* s) {//스택을 초기화 하는 함수
+	initqueue(&s->q1);
+	initqueue(&s->q2);//두 큐를 초기화
+	s->size = 0;//스택 크기를 0으로 초기화
+	return;
+}
+
+int isEmpty(stack* s) {//스택이 비었는지 확인 하는 함수
+	return s->size == 0;//스택이 비었으면 1반환 차있으면 0반환
+}
+
+void push(stack* s, int value) {
+	enqueue(&s->q2, value);//새 데이터를 q2에 삽입
+
+	while (!isQueueEmpty(&s->q1)) {//q1이 빌때까지 반복함
+		enqueue(&s->q2,dequeue(&s->q1));//q1에 있는 데이터를 q2로 이동시킴
+	}
+
+	queue tmp = s->q1;//q1을 임시로 저장
+	s->q1 = s->q2;//q2를 q1로 변경
+	s->q2 = tmp;
+	s->size++;//스택의 크기 증가
+	return;
+}
+
+int top(stack* s) {//front를 반환하는 함수
+
+	if (isEmpty(s)) { // 스택이 비었으면
+
+		return -1; // 예외값 반환
+	}
+
+	return queueFront(&s->q1); // q1 front 반환
+}
+
+int pop(stack* s) {
+
+	if (isEmpty(s)) { // 스택이 비었으면
+
+		return -1; // 예외값 반환
+	}
+
+	s->size--; // 스택 크기 감소
+
+	return dequeue(&s->q1); // q1 front 제거 후 반환
+}
+
+
+
+int main() {
+	initStack(&s); // 스택 초기화
+
+	LARGE_INTEGER freq; // 타이머 주파수 저장 변수
+
+	LARGE_INTEGER start; // 시작 시간 저장 변수
+
+	LARGE_INTEGER end; // 종료 시간 저장 변수
+
+	QueryPerformanceFrequency(&freq); // 타이머 주파수 계산
+
+	char command; // 명령 저장 변수
+
+	while (1) {//반복
+		scanf(" %c", &command); // 명령 입력
+
+        // S 명령 처리
+        if (command == 'S') {
+
+            QueryPerformanceCounter(&start); // 시작 시간 측정
+
+            int result = isEmpty(&s); // isEmpty 호출
+
+            QueryPerformanceCounter(&end); // 종료 시간 측정
+
+            double cpu =
+                (double)(end.QuadPart - start.QuadPart)
+                / freq.QuadPart * 1000; // ms 단위 시간 계산
+
+            if (result) { // 비어있으면
+
+                printf("Empty (%d), cputime = %.10lf\n",
+                    s.size, cpu); // Empty 출력
+            }
+
+            else { // 비어있지 않으면
+
+                printf("Nonempty (%d), cputime = %.10lf\n",
+                    s.size, cpu); // Nonempty 출력
+            }
+        }
+
+        // t 명령 처리
+        else if (command == 't') {
+
+            QueryPerformanceCounter(&start); // 시작 시간 측정
+
+            int result = top(&s); // top 호출
+
+            QueryPerformanceCounter(&end); // 종료 시간 측정
+
+            double cpu =
+                (double)(end.QuadPart - start.QuadPart)
+                / freq.QuadPart * 1000;
+
+            if (result == -1) { // 비어있으면
+
+                printf("Empty Stack Exception!! (%d), cputime = %.10lf\n",
+                    s.size, cpu); // 예외 출력
+            }
+
+            else { // 정상 상태면
+
+                printf("%d (%d), cputime = %.10lf\n",
+                    result, s.size, cpu); // top 값 출력
+            }
+        }
+
+        // p 명령 처리
+        else if (command == 'p') {
+
+            QueryPerformanceCounter(&start); // 시작 시간 측정
+
+            int num; // 숫자 저장 변수
+
+            char ch; // 문자 저장 변수
+
+            while (1) { // 반복 시작
+
+                ch = getchar(); // 문자 입력
+
+                if (ch == '\n') { // 엔터면 종료
+
+                    break;
+                }
+
+                if (ch == ' ') { // 공백이면 다시 반복
+
+                    continue;
+                }
+
+                ungetc(ch, stdin); // 읽은 문자 되돌리기
+
+                scanf("%d", &num); // 숫자 입력
+
+                push(&s, num); // push 수행
+            }
+
+            QueryPerformanceCounter(&end); // 종료 시간 측정
+
+            double cpu =
+                (double)(end.QuadPart - start.QuadPart)
+                / freq.QuadPart * 1000;
+
+            printf("OK (%d), cputime = %.10lf\n",
+                s.size, cpu); // OK 출력
+        }
+
+        // P 명령 처리
+        else if (command == 'P') {
+
+            QueryPerformanceCounter(&start); // 시작 시간 측정
+
+            for (int i = 0; i < 100000; i++) { // 10만 번 반복
+
+                int randomNum = rand() % 90 + 10; // 10~99 난수 생성
+
+                push(&s, randomNum); // push 수행
+            }
+
+            QueryPerformanceCounter(&end); // 종료 시간 측정
+
+            double cpu =
+                (double)(end.QuadPart - start.QuadPart)
+                / freq.QuadPart * 1000;
+
+            printf("OK (%d), cputime = %.10lf\n",
+                s.size, cpu); // 결과 출력
+        }
+
+        // o 명령 처리
+        else if (command == 'o') {
+
+            QueryPerformanceCounter(&start); // 시작 시간 측정
+
+            int result = pop(&s); // pop 호출
+
+            QueryPerformanceCounter(&end); // 종료 시간 측정
+
+            double cpu =
+                (double)(end.QuadPart - start.QuadPart)
+                / freq.QuadPart * 1000;
+
+            if (result == -1) { // 비어있으면
+
+                printf("Empty Stack Exception!! (%d), cputime = %.10lf\n",
+                    s.size, cpu); // 예외 출력
+            }
+
+            else { // 정상 상태면
+
+                printf("%d (%d), cputime = %.10lf\n",
+                    result, s.size, cpu); // pop 값 출력
+            }
+        }
+
+        // q 명령 처리
+        else if (command == 'q') {
+
+            break; // 반복 종료
+        }
+
+	}
+    return 0;
+}
