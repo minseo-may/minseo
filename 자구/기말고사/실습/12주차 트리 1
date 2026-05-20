@@ -1,0 +1,56 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#pragma warning(disable:4996)
+
+typedef struct tree {//트리 노드 구조체 구현
+	int data;
+	struct tree* left;//왼쪽을 가리키는 노드
+	struct tree* right;//오른쪽을 가리키는 노드
+}tree;
+
+tree *maketree(int data, tree* left, tree* right) {//트리 노드를 만드는 함수
+	tree* ne = (tree*)malloc(sizeof(tree));//새 노드 할당
+
+	ne->data = data;//데이터 저장
+	ne->left = left;//왼쪽 트리 저장
+	ne->right = right;//오른쪽 트리 저장
+	
+	return ne;//노드를 리턴함
+}
+
+int main() {
+	int n;//입력 받을 n값
+
+	tree* F[10] = { NULL };//배열 선언
+
+	F[4] = maketree(70, NULL, NULL);//외부 노드들 생성
+	F[5] = maketree(90, NULL, NULL);
+	F[7] = maketree(130, NULL, NULL);
+	F[8] = maketree(80, NULL, NULL);
+	
+	F[6] = maketree(120, F[7], F[8]);
+	F[2] = maketree(30, F[4], F[5]);
+	F[3] = maketree(50, NULL, F[6]);//그 다음 위에 있는 노드들 생성
+
+	F[1] = maketree(20, F[2], F[3]);//루트 노드 생성
+
+	scanf("%d", &n);//정수를 입력 받음
+	
+	if (F[n] == NULL) {//존재하지 않는 노드 값을 입력 받은 경우
+		printf("-1");
+	}
+	else {
+		printf("%d", F[n]->data);//자신의 데이터 출력
+
+		if (F[n]->left != NULL) {//왼쪽 자식 노드가 존재하는 경우
+			printf(" %d", F[n]->left->data);//출력
+		}
+
+		if (F[n]->right != NULL) {//오른쪽 자식 노드가 존재하는 경우
+			printf(" %d", F[n]->right->data);//오른쪽 자식 노드 정보 출력
+		}
+	}
+
+	return 0;
+
+}
