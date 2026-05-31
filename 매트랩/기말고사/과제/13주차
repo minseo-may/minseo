@@ -1,0 +1,301 @@
+%% 문제 1
+
+clc;
+clear;
+
+% (a) seed 고정
+rng(13);
+
+% (b) 40개 문항의 정답 확률 생성
+p = 0.35 + (0.95 - 0.35) * rand(1,40);
+
+% (c) 5000 × 40 logical matrix 생성
+result = rand(5000,40) < p;
+
+% (d) 총점, 평균점수, 표준편차 계산
+score = sum(result,2);
+
+meanScore = mean(score);
+stdScore = std(score);
+
+% (e) 점수 histogram
+figure;
+histogram(score);
+xlabel('score');
+ylabel('students');
+title('graph');
+grid on;
+
+% 평균점수 이상 학생 비율
+ratio = sum(score >= meanScore) / length(score);
+
+%% 문제 2
+
+clc;
+clear;
+
+% (a) 10000 × 20 크기의 제품 무게 행렬 생성
+weight = 100 + 4*randn(10000,20);
+
+% (b) 각 상자의 평균 무게 계산
+meanWeight = mean(weight,2);
+
+% (c) 불합격 조건 정의
+fail = (meanWeight < 98) | (meanWeight > 102);
+
+% (d) 불합격 비율 계산
+failRate = sum(fail) / length(fail);
+
+% (e) 상자 평균 무게 histogram 및 기준선 표시
+figure;
+histogram(meanWeight);
+hold on;
+xline(98,'r','LineWidth',2);
+xline(102,'r','LineWidth',2);
+xlabel('x');
+ylabel('y');
+title('graph');
+grid on;
+hold off;
+
+%% 문제 3
+
+clc;
+clear;
+
+% (a) N ~ N(0,1) 난수 100000개 생성
+N = randn(100000,1);
+
+% (b) S = 1.8 + N 계산
+S = 1.8 + N;
+
+% (c) S >= 1.2인 사건 정의
+success = S >= 1.2;
+
+% (d) 감지 성공률 계산
+successRate = sum(success) / length(success);
+
+% (e) 
+figure;
+histogram(S);
+hold on;
+xline(1.2,'r','LineWidth',2);
+xlabel('x');
+ylabel('y');
+grid on;
+hold off;
+
+%% 문제 4
+
+clc;
+clear;
+
+% (a)
+orderNum = poissrnd(180,365,1);
+
+% (b)
+totalTime = zeros(365,1);
+
+for i = 1:365
+    processTime = 6 + 2*randn(orderNum(i),1);
+    processTime(processTime < 0) = 0;
+    totalTime(i) = sum(processTime);
+end
+
+% (c)
+ratio = sum(totalTime > 1200) / length(totalTime);
+
+% (d)
+figure;
+plot(orderNum);
+
+figure;
+plot(totalTime);
+
+% (e)
+figure;
+scatter(orderNum,totalTime);
+
+%% 문제 5
+
+clc;
+clear;
+
+% (a)
+measurement = 25 + 0.8*randn(10000,30);
+
+% (b)
+meanMeasurement = mean(measurement,2);
+
+% (c)
+event = (meanMeasurement >= 24.7) & (meanMeasurement <= 25.3);
+
+% (d)
+probability = sum(event) / length(event);
+
+% (e)
+histogram(measurement(:,1));
+hold on;
+histogram(meanMeasurement);
+
+%% 문제 6
+
+clc;
+clear;
+
+% (a)
+r = 0.0008 + 0.015*randn(5000,60);
+
+% (b)
+asset = 100*cumprod(1+r,2);
+
+% (c)
+finalAsset = asset(:,end);
+
+meanAsset = mean(finalAsset);
+minAsset = min(finalAsset);
+maxAsset = max(finalAsset);
+
+fprintf('%.4f\n',meanAsset);
+fprintf('%.4f\n',minAsset);
+fprintf('%.4f\n',maxAsset);
+
+% (d)
+probability = sum(finalAsset < 100)/length(finalAsset);
+
+% (e)
+figure;
+plot(asset(randperm(5000,30),:)');
+xlabel('x');
+ylabel('y');
+title('graph');
+
+%% 문제 7
+
+clc;
+clear;
+
+% (a)
+arrivalInterval = exprnd(8,300,1);
+arrivalTime = cumsum(arrivalInterval);
+
+% (b)
+serviceTime = 10 + 3*randn(300,1);
+serviceTime(serviceTime < 0) = 1;
+
+% (c)
+startTime = zeros(300,1);
+endTime = zeros(300,1);
+
+startTime(1) = arrivalTime(1);
+endTime(1) = startTime(1) + serviceTime(1);
+
+for i = 2:300
+    startTime(i) = max(arrivalTime(i),endTime(i-1));
+    endTime(i) = startTime(i) + serviceTime(i);
+end
+
+% (d)
+waitTime = startTime - arrivalTime;
+
+% (e)
+meanWait = mean(waitTime);
+maxWait = max(waitTime);
+ratio = sum(waitTime > 20)/length(waitTime);
+
+fprintf('%.4f\n',meanWait);
+fprintf('%.4f\n',maxWait);
+fprintf('%.4f\n',ratio);
+
+figure;
+histogram(waitTime);
+xlabel('x');
+ylabel('y');
+title('graph');
+
+%% 문제 8
+
+clc;
+clear;
+
+% (a)
+p = [0.72, 0.81, 0.67, 0.90, 0.76];
+r = rand(100000,5);
+
+% (b)
+detection = r < p;
+
+% (c)
+numDetection = sum(detection,2);
+
+% (d)
+success = numDetection >= 3;
+detectionProbability = sum(success)/length(success);
+
+% (e)
+histogram(numDetection);
+xlabel('x');
+ylabel('y');
+title('graph');
+
+%% 문제 9
+
+clc;
+clear;
+
+% (a)
+pass1 = rand(50000,1) < 0.94;
+
+% (b)
+pass2 = false(50000,1);
+pass2(pass1) = rand(sum(pass1),1) < 0.91;
+
+% (c)
+pass3 = false(50000,1);
+pass3(pass2) = rand(sum(pass2),1) < 0.88;
+
+% (d)
+finalPassRate = sum(pass3)/50000;
+
+% (e)
+fail1 = sum(~pass1);
+fail2 = sum(pass1 & ~pass2);
+fail3 = sum(pass2 & ~pass3);
+finalPass = sum(pass3);
+
+result = [fail1 fail2 fail3 finalPass];
+
+figure;
+bar(result);
+xlabel('x');
+ylabel('y');
+title('graph');
+
+%% 문제 10
+
+clc;
+clear;
+
+% (a)
+serverLoad = 35*randn(10000,1);
+
+% (b)
+overload = rand(10000,1) < 0.12;
+
+% (c)
+powerUsage = 500 + serverLoad + 120*overload;
+
+% (d)
+ratio = sum(powerUsage > 650)/length(powerUsage);
+
+% (e)
+histogram(powerUsage);
+xlabel('x');
+ylabel('y');
+title('graph');
+
+meanOverload = mean(powerUsage(overload));
+meanNormal = mean(powerUsage(~overload));
+
+fprintf('%.4f\n',meanOverload);
+fprintf('%.4f\n',meanNormal);
