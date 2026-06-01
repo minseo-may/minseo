@@ -1,0 +1,71 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#pragma warning(disable:4996)
+
+typedef struct tree {
+	struct tree* left;//왼쪽 자식 노드 의미
+	int id;//id저장
+	int data;//현재 노드의 데이터 저장
+	struct tree* right;//오른쪽 자식 노드 의미
+}tree;
+
+tree* maketree(int id, int data, tree* left, tree* right) {//노드를 만드는 함수
+	
+	tree* ne = (tree*)malloc(sizeof(tree));//새로운 노드 할당
+	ne->id = id;;
+	ne->data = data;
+	ne->left = left;
+	ne->right = right;//구조체에 값 대임
+	
+	return ne;//노드를 반환함
+}
+
+tree* find(tree* root, int target) {//타겟 노드를 탐색하는 함수
+	if (root == NULL) {
+		return NULL;//탐색에 실패 한 경우
+	}
+	if (root->id == target) {//현재 노드가 찾는 노드 인 경우
+		return root;//현재 노드를 반환
+	}
+	//현재 노드가 찾는 노드가 아닌경우
+	tree* p = find(root->left, target);//왼쪽 트리 탐색
+	if (p != NULL) {//타겟 노드를 찾은 경우
+		return p;//타겟 노드 반환
+	}
+	return find(root->right, target);//오른쪽 트리 탐색
+} 
+
+int sum(tree* root) {//서브 트리의 용량 합을 계산 하는 함수
+	if (root == NULL) {
+		return 0;//비엇다면 0을 반환
+	}
+	//현재 노드의 데이터 값과 왼쪽 자식들,오른쪽 자식들 값을 합산한 값을 반환
+	return root->data + sum(root->left) + sum(root->right);
+}
+
+int main() {
+	int id;
+	scanf("%d", &id);
+
+	//트리를 생성
+	tree* F4 = maketree(4, 70, NULL, NULL);
+	tree* F5 = maketree(5, 90, NULL, NULL);
+	tree* F7 = maketree(7, 130, NULL, NULL);
+	tree* F8 = maketree(8, 80, NULL, NULL);
+
+	tree* F6 = maketree(6, 120, F7, F8);
+
+	tree* F2 = maketree(2, 30, F4, F5);
+	tree* F3 = maketree(3, 50, NULL, F6);
+
+	tree* F1 = maketree(1, 20, F2, F3);
+
+	tree* start = find(F1, id);//맨 위 노드부터 타겟 노드를 탐색
+	if (start == NULL) {//존재하지 않는 노드를 탐색 한 경우
+		printf("-1");
+		return 0;
+	}
+	printf("%d", sum(start));//서브트리의 합을 출력
+	
+	return 0;
+}
