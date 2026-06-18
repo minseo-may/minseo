@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#pragma warning(disable:4996)
+
+typedef struct node {
+    char text[100];//트리의 내용이 담겨 있는 부분
+    int end;//0이면 질문하는 노드 1이면 마지막 결정 노드
+    struct node* yes;//Y선택시 이동하는 노드
+    struct node* no;//N선택시 이동하는 노드
+}node;
+
+node* createNode(char text[], int end) {//노드를 생성하는 함수
+    node* ne = (node*)malloc(sizeof(node));//새 노드 할당
+    strcpy(ne->text, text);//노드에 정보 저장
+    ne->end = end;
+    ne->yes = NULL;
+    ne->no = NULL;
+    return ne;//노드 반환
+}
+
+node* buildDecisionTree()
+{
+    // 질문 노드 생성
+    node* q1 = createNode("Do you want hot food?", 0);
+
+    node* q2 = createNode("Do you prefer Korean food?", 0);
+    node* q3 = createNode("Do you want soup?", 0);
+    node* q4 = createNode("Do you prefer spicy food?", 0);
+    node* q5 = createNode("Do you like cheese?", 0);
+    node* q13 = createNode("Do you prefer Italian food?", 0);
+
+    node* q6 = createNode("Do you want fast food?", 0);
+    node* q7 = createNode("Do you like fried food?", 0);
+    node* q8 = createNode("Do you want chicken?", 0);
+    node* q9 = createNode("Do you like sweet food?", 0);
+    node* q14 = createNode("Do you like chocolate?", 0);
+
+    node* q10 = createNode("Do you want noodles?", 0);
+    node* q11 = createNode("Do you want rice?", 0);
+
+    // 결정 노드 생성
+    node* d1 = createNode("Kimchi Stew", 1);
+    node* d2 = createNode("Bibimbap", 1);
+
+    node* d3 = createNode("Pizza", 1);
+    node* d4 = createNode("Lasagna", 1);
+    node* d5 = createNode("Steak", 1);
+
+    node* d6 = createNode("Fried Chicken", 1);
+    node* d7 = createNode("Hamburger", 1);
+
+    node* d8 = createNode("Donut", 1);
+    node* d9 = createNode("Sandwich", 1);
+
+    node* d10 = createNode("Cold Noodles", 1);
+    node* d11 = createNode("Kimbap", 1);
+
+    node* d12 = createNode("Chocolate Cake", 1);
+    node* d13 = createNode("Cheesecake", 1);
+
+    // 루트 연결
+    q1->yes = q2;
+    q1->no = q6;
+
+    // Hot Food 분기
+    q2->yes = q3;
+    q2->no = q4;
+
+    // 3회 질문 경로
+    q3->yes = d1;
+    q3->no = d2;
+
+    // 4~5회 질문 경로
+    q4->yes = q5;
+    q4->no = d5;
+
+    q5->yes = q13;
+    q5->no = d4;
+
+    // 5회 질문 경로
+    q13->yes = d3;
+    q13->no = d4;
+
+    // Cold Food 분기
+    q6->yes = q7;
+    q6->no = q10;
+
+    q7->yes = q8;
+    q7->no = q9;
+
+    // 4회 질문 경로
+    q8->yes = d6;
+    q8->no = d7;
+
+    // 5회 질문 경로
+    q9->yes = q14;
+    q9->no = d9;
+
+    q14->yes = d12;
+    q14->no = d13;
+
+    // 3회 질문 경로
+    q10->yes = d10;
+
+    // 4~5회 질문 경로
+    q10->no = q11;
+    q11->yes = d11;
+    q11->no = q14;
+
+    return q1;
+}
+
+void runDecisionTree(node* root) {//결정 트리를 실행하는 함수
+    node* p = root;//현재 노드 지정
+    char answer;
+    printf("\nFood choice\n");
+
+    while (p->end == 0) {//질문 노드인 경우 반복
+        printf("%s : ", p->text);//현재 노드의 정보 출력
+        scanf(" %c", &answer);//사용자의 입력을 받음
+
+        if (answer == 'Y') {//Y라고 답한 경우
+            p = p->yes;//노드 이동
+        }
+        else {
+            p = p->no;//노드 이동
+        }
+    }
+    printf("\nanswer : %s\n", p->text);//응답을 출력
+    return;
+}
+
+int main() {
+    node* root;//루트 노드 포인터
+
+    root = buildDecisionTree();//결정 트리 만듦
+
+    for (int i = 0;i < 3;i++) {
+        runDecisionTree(root);
+    }
+    return 0;
+}
